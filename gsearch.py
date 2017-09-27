@@ -12,5 +12,5 @@ def main(args):
 if __name__ == '__main__':
     import sys
     import os
-    sys.path.append(os.path.abspath("./gsm.py"))
+    #sys.path.append(os.path.abspath("./gsm.py"))
     sys.exit(main(sys.argv))
