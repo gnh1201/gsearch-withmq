@@ -33,6 +33,7 @@ __all__ = ['search']
 import os
 import sys
 import time
+import random
 
 if sys.version_info[0] > 2:
     from http.cookiejar import LWPCookieJar
@@ -50,6 +51,7 @@ BeautifulSoup = None
 # URL templates to make Google searches.
 url_home          = "http://www.google.%(tld)s/"
 url_search        = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&btnG=Google+Search&inurl=https"
+url_search_all    = "http://www.google.%(tld)s/search?q=%(query)s&btnG=Google+Search&inurl=https"
 url_next_page     = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&start=%(start)d&inurl=https"
 url_search_num    = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search&inurl=https"
 url_next_page_num = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d&inurl=https"
@@ -186,7 +188,10 @@ def search(query, tld='com', lang='en', num=10, start=0, stop=None, pause=2.0,
             url = url_next_page_num % vars()
     else:
         if num == 10:
-            url = url_search % vars()
+            if lang == "all":
+                url = url_search_all % vars()
+            else:
+                url = url_search % vars()
         else:
             url = url_search_num % vars()
 
@@ -194,6 +199,7 @@ def search(query, tld='com', lang='en', num=10, start=0, stop=None, pause=2.0,
     while not stop or start < stop:
 
         # Sleep between requests.
+        pause = pause + (random.random() * 10) # random pause time
         time.sleep(pause)
 
         # Request the Google Search results page.
